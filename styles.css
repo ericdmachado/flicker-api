@@ -28,6 +28,7 @@ table{
 	width: 100%;
 }
 .card figcaption{
+	word-break: break-all;
 	font-size: 12px;
 	text-align: center;
 	display: block;
