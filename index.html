@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flick API</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.css" integrity="sha256-vEYriSASSzT/+p9GbevPsOCXMX7Wt2tzpUetOcN0/jQ=" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1>Flickr 6 Photos</h1>
 
+    <table cellspacing="8" cellpadding="0" border="0">
+      <tbody id="flickr-photos" />
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/featherlight/1.7.13/featherlight.min.js" integrity="sha256-/SEQTcl9tvyYDA8SuhV/PMn92shN3kNn8C9vnbBcE9Y=" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function(){
+        const photos = $('#flickr-photos');
+        const api_key = 'eef48ebd80cda450da2fdbc7012996c6';
+        const template = function( image ){
+          return `<td valign="top">
+              <figure class="card">
+                <a href="#" data-featherlight="${image.large}">
+                  <img src="${image.thumb}" title="${image.title}" />
+                </a>
+                <figcaption>
+                  ${image.title}
+                </figcaption>
+              </figure>
+            </td>`;
+        }
+
+
+        $.get(`https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=${api_key}&per_page=6&format=json&nojsoncallback=1`).done(function(xhr){
+          xhr.photos.photo.forEach(function(photo){
+            let image = { 
+              title: photo.title, 
+              thumb: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_q.jpg`,
+              large: `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_b.jpg`
+            };
+
+            photos.append(template(image));
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
